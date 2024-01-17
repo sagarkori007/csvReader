@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Display</title>
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <script>
+        function searchTable() {
+            var searchInput = document.getElementById('searchInput').value.toUpperCase();
+            var tableBody = document.getElementById('tableBody');
+            var rows = tableBody.getElementsByTagName('tr');
+
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName('td');
+                var rowMatch = false;
+
+                for (var j = 0; j < cells.length; j++) {
+                    var cellText = cells[j].textContent || cells[j].innerText;
+
+                    if (cellText.toUpperCase().indexOf(searchInput) > -1) {
+                        rowMatch = true;
+                        break;
+                    }
+                }
+
+                if (rowMatch) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+    
+</head>
+<body>
+    <% include('_header') %>
+
+    <main>
+        <button onclick="window.location.href='/';">Go Back</button>
+
+        <h2>Contents of <%= filename %></h2>
+
+        <!-- Search box -->
+        <label for="searchInput">Search:</label>
+        <input type="text" id="searchInput" oninput="searchTable()" placeholder="Type to search">
+
+        <% if (fileContent && fileContent.length > 0) { %>
+            <table>
+                <!-- Table header -->
+                <thead>
+                    <tr>
+                        <% Object.keys(fileContent[0]).forEach(column => { %>
+                            <th><%= column %></th>
+                        <% }); %>
+                    </tr>
+                </thead>
+
+                <!-- Table body with an added ID for easy reference in JavaScript -->
+                <tbody id="tableBody">
+                    <% fileContent.forEach((row, index) => { %>
+                        <tr <%= index % 2 === 0 ? 'style="background-color: #f9f9f9;"' : '' %>>
+                            <% Object.values(row).forEach(value => { %>
+                                <td><%= value %></td>
+                            <% }); %>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No data to display.</p>
+        <% } %>
+    </main>
+</body>
+</html>
