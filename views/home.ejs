@@ -7,20 +7,24 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <!-- adding the header for uniform theme  -->
     <%- include('_header')%>
 
     <main>
+        <!-- heading -->
         <aside class="aside section-1">
             <div class="upload-csv-heading">
                 <h3>Upload CSV</h3>
             </div>
             <br>
+            <!-- form for uploading the csv  -->
             <div>
                 <form action="/upload-csv" method="post" enctype="multipart/form-data">
                     <input type="file" name="csvFile" accept=".csv" required>
                     <button type="submit">Upload</button>
                 </form>
             </div>
+            <!-- show uploaded files  -->
             <div class="uploaded-files">
                 <h3>Uploaded Files</h3>
                 <ul>

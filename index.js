@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = 8000;
 
+//import mongoose
 const db = require('./config/mongoose');
 
 //set static file
@@ -11,6 +12,7 @@ app.set('view engine','ejs');
 //set the dynamic view folder
 app.set('views', './views');
 
+//routing 
 app.use('/',require('./routes/index'));
 
 

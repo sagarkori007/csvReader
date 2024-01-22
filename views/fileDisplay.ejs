@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/styles.css">
 
     <script>
+        // function for searching button 
         function searchTable() {
             var searchInput = document.getElementById('searchInput').value.toUpperCase();
             var tableBody = document.getElementById('tableBody');
@@ -34,8 +35,10 @@
         }
     </script>
     
+    
 </head>
 <body>
+    <!-- header adding  -->
     <% include('_header') %>
 
     <main>
@@ -70,6 +73,7 @@
                 </tbody>
             </table>
         <% } else { %>
+            <!-- handle if no data is available -->
             <p>No data to display.</p>
         <% } %>
     </main>

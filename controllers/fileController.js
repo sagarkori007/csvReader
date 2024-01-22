@@ -52,8 +52,9 @@ module.exports.processCSV = async (req, res) => {
 
 module.exports.displayFile = async (req, res) => {
     try {
-      const filename = req.params.filename; // Get the filename from the route parameter
-  
+      // Get the filename from the route parameter
+      const filename = req.params.filename; 
+      
       // Find the selected file in the uploadedFiles array
       const selectedFile = fileStorage.uploadedFiles.find(file => file.filename === filename);
   
