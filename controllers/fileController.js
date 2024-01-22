@@ -1,6 +1,8 @@
+// Import necessary modules
 const multer = require('multer');
 const csvParser = require('csv-parser');
 const fs = require('fs');
+const FileDetails = require('../models/FileDetails'); // Import the Mongoose model
 
 // Set up multer for file upload
 const upload = multer({ dest: 'uploads/' });
@@ -13,8 +15,9 @@ const fileStorage = {
 // Display home page with file content or file list
 module.exports.home = async (req, res) => {
   try {
-    console.log('home started');
-    return res.render('home', { files: fileStorage.uploadedFiles, fileContent: [] });
+    // Retrieve file details from MongoDB
+    const filesFromDB = await FileDetails.find();
+    return res.render('home', { files: filesFromDB, fileContent: [] });
   } catch (error) {
     console.error('Error in loading the home', error);
     res.status(500).send('Internal Server Error');
@@ -37,9 +40,14 @@ module.exports.processCSV = async (req, res) => {
       .on('data', (row) => {
         data.push(row);
       })
-      .on('end', () => {
-        // Save the data and file information to the singleton object
-        fileStorage.uploadedFiles.push({ filename: file.originalname, data });
+      .on('end', async () => {
+        // Save the data and file information to MongoDB
+        const fileDetails = new FileDetails({
+          filename: file.originalname,
+          data: data,
+        });
+
+        await fileDetails.save();
 
         console.log('Parsed Data:', data);
         return res.redirect('back');
@@ -50,26 +58,26 @@ module.exports.processCSV = async (req, res) => {
   }
 };
 
+// Display content of a specific file
 module.exports.displayFile = async (req, res) => {
-    try {
-      // Get the filename from the route parameter
-      const filename = req.params.filename; 
-      
-      // Find the selected file in the uploadedFiles array
-      const selectedFile = fileStorage.uploadedFiles.find(file => file.filename === filename);
-  
-      if (selectedFile) {
-        const fileContent = selectedFile.data;
-        console.log(fileContent);
-  
-        // Render a new page to display the file content
-        res.render('fileDisplay', { filename, fileContent });
-      } else {
-        console.log('Selected file not found');
-        return res.status(404).send('File not found');
-      }
-    } catch (error) {
-      console.error('Error in displaying file content', error);
-      res.status(500).send('Internal Server Error');
+  try {
+    const filename = req.params.filename;
+
+    // Find the selected file in the MongoDB collection
+    const selectedFile = await FileDetails.findOne({ filename });
+
+    if (selectedFile) {
+      const fileContent = selectedFile.data;
+      console.log(fileContent);
+
+      // Render a new page to display the file content
+      res.render('fileDisplay', { filename, fileContent });
+    } else {
+      console.log('Selected file not found');
+      return res.status(404).send('File not found');
     }
-  };
+  } catch (error) {
+    console.error('Error in displaying file content', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
