@@ -15,5 +15,5 @@ Getting Started
 
 Clone the repository:
 
-git clone https://github.com/sagarkori007/habitTrackerApp.git
+git clone https://github.com/sagarkori007/csvReader
 2.Dependencies Node.js Express MongoDB Passport.js
